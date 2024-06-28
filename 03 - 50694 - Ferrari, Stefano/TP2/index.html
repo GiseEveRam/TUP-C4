@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- Enlaces a React, ReactDOM y Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Iconos FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <title>Legajo: 50694</title>
+    <style>
+        /* reset */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        #root {
+            max-width: 1280px;
+            margin: 20px auto;
+        }
+
+        .card {
+            padding: 16px;
+            margin: 8px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .card i {
+            margin-left: 8px;
+            font-size: 18px;
+            color: gold;
+            cursor: pointer;
+        }
+
+        .card div {
+            flex: 1;
+            font-size: 16px;
+        }
+
+        .agenda {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            justify-content: space-around;
+            width: 100%;
+        }
+
+        .section {
+            width: 240px;
+            padding: 16px;
+            margin-right: 16px;
+            margin-bottom: 16px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .section span {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            color: gold;
+            cursor: pointer;
+        }
+
+        .section div {
+            margin-top: 25px;
+            font-size: 18px;
+        }
+
+        .section div:last-child {
+            text-align: right;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        h2 {
+            margin-top: 40px;
+            font-size: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script>
+        const datos = [
+            { id: 1, nombre: 'Juan', apellido: 'Perez', telefono: '(381) 123-4567', favorito: true },
+            { id: 2, nombre: 'Maria', apellido: 'Gomez', telefono: '(381) 123-4567', favorito: false },
+            { id: 3, nombre: 'Pedro', apellido: 'Gonzalez', telefono: '(381) 123-4567', favorito: true },
+            { id: 4, nombre: 'Ana', apellido: 'Fernandez', telefono: '(381) 123-4567', favorito: false },
+            { id: 5, nombre: 'Lucas', apellido: 'Rodriguez', telefono: '(381) 123-4567', favorito: true },
+            { id: 6, nombre: 'Carla', apellido: 'Lopez', telefono: '(381) 123-4567', favorito: false },
+            { id: 7, nombre: 'Jorge', apellido: 'Diaz', telefono: '(381) 123-4567', favorito: true },
+            { id: 8, nombre: 'Luis', apellido: 'Martinez', telefono: '(381) 123-4567', favorito: false },
+            { id: 9, nombre: 'Florencia', apellido: 'Paz', telefono: '(381) 123-4567', favorito: true },
+            { id: 10, nombre: 'Miguel', apellido: 'Rojas', telefono: '(381) 123-4567', favorito: false },
+            { id: 11, nombre: 'Sofia', apellido: 'Acosta', telefono: '(381) 123-4567', favorito: true },
+            { id: 12, nombre: 'Carlos', apellido: 'Vera', telefono: '(381) 123-4567', favorito: false },
+            { id: 13, nombre: 'Valeria', apellido: 'Gimenez', telefono: '(381) 123-4567', favorito: true },
+            { id: 14, nombre: 'Pablo', apellido: 'Sosa', telefono: '(381) 123-4567', favorito: false },
+            { id: 15, nombre: 'Romina', apellido: 'Rios', telefono: '(381) 123-4567', favorito: true },
+            { id: 16, nombre: 'Ezequiel', apellido: 'Molina', telefono: '(381) 123-4567', favorito: false },
+            { id: 17, nombre: 'Agustina', apellido: 'Ortiz', telefono: '(381) 123-4567', favorito: true },
+            { id: 18, nombre: 'Matias', apellido: 'Luna', telefono: '(381) 123-4567', favorito: false },
+            { id: 19, nombre: 'Cecilia', apellido: 'Carrizo', telefono: '(381) 123-4567', favorito: true },
+            { id: 20, nombre: 'Facundo', apellido: 'Paez', telefono: '(381) 123-4567', favorito: false }
+        ]
+    </script>
+
+    <script type="text/babel">
+        const { createRoot } = ReactDOM
+
+        const compararApellidosYNombres = (a, b) => {
+            const apellido = a.apellido.toLowerCase().localeCompare(b.apellido.toLowerCase());
+
+            //si los apellidos son iguales, compara por nombre
+            if (apellido === 0) {
+                const nombre = a.nombre.toLowerCase().localeCompare(b.nombre.toLowerCase());
+                return nombre;
+            }
+
+            return apellido;
+        }
+
+        const Contacto = ({ id, nombre, apellido, telefono, favorito, setFavorito }) =>
+            <div className="card">
+                <div>{nombre} <b>{apellido}</b></div>
+                <div>{telefono}</div>
+                <span onClick={() => setFavorito(id, !favorito)}>
+                    <i className={favorito ? 'fas fa-star' : 'far fa-star'}></i>
+                </span>
+            </div>
+
+        const Agenda = ({ datos, setFavorito }) => {
+            const contactosFavoritos = datos.filter(contacto => contacto.favorito).sort(compararApellidosYNombres);
+            const contactosNormales = datos.filter(contacto => !contacto.favorito).sort(compararApellidosYNombres);
+            return (
+            <div className="agenda">
+                <article>
+                    <h2>Favoritos</h2>
+                    { contactosFavoritos.map(contacto => <Contacto key={contacto.id} setFavorito={setFavorito} {...contacto} />) }
+                </article>
+                <article>  
+                    <h2>Contactos</h2>
+                    { contactosNormales.map(contacto => <Contacto key={contacto.id} setFavorito={setFavorito} {...contacto} />) }
+                </article>
+            </div>
+            )
+        }
+
+        const App = () => {
+            const [contactos, setContactos] = React.useState(datos.sort(compararApellidosYNombres))
+
+            const setFavorito = (id, esFavorito) =>{
+                setContactos((prev) => 
+                    [...prev.map(contacto => contacto.id === id ? {...contacto, favorito: esFavorito} : contacto)]
+                )
+            }
+
+            return(           
+            <main>
+                <h1>Agenda</h1>
+                <Agenda datos={contactos} setFavorito={setFavorito}/>
+            </main>
+            )
+        }
+
+        const root = createRoot(document.getElementById('root'))
+        root.render(<App />);
+    </script>
+</body>
+
+</html>

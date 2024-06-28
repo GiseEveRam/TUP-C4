@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Enlaces a React, ReactDOM y Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Iconos FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <title>Legajo: 50694</title>
+    <style>
+      /* reset */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f0f0;
+      }
+
+      #root {
+        max-width: 1280px;
+        margin: 20px auto;
+      }
+
+      .flex {
+        display: flex;
+      }
+
+      .flex-col {
+        flex-direction: column;
+      }
+
+      .flex-row {
+        flex-direction: row;
+      }
+
+      .flex-center {
+        justify-content: center;
+        align-items: center;
+      }
+
+      .text-ellipsis {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .w-full {
+        width: 100%;
+      }
+
+      h1 {
+        font-size: 22px;
+        margin-right: 10px;
+      }
+
+      .card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        margin-bottom: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        width: 100%;
+        overflow: hidden;
+        cursor: pointer; 
+
+      .quantity {
+        font-size: 32px;
+        color: blue;
+        margin: 0px 20px 0px 15px;
+        flex-shrink: 0;
+        max-width: 30%;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .details {
+        flex-grow: 1;
+        min-width: 0;
+      }
+
+      .name {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 4px;
+      }
+
+      .code {
+        color: #555;
+      }
+
+      .edit-button,
+      .delete-button,
+      .add-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        margin: 2px 0;
+      }
+
+      .edit-button i,
+      .delete-button i,
+      .add-button i {
+        font-size: 20px;
+        color: #000;
+        cursor: pointer;
+      }
+
+      .confirm-button,
+      .cancel-button {
+        margin-bottom: 8px;
+        background-color: transparent;
+        padding: 4px;
+        border: 1px solid #000;
+        border-radius: 8px;
+        box-sizing: border-box;
+        outline: none;
+        cursor: pointer;
+      }
+
+      input {
+        margin-bottom: 5px;
+        padding: 4px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-sizing: border-box;
+        outline: none;
+        width: 90%;
+      }
+
+      input:last-child{
+        margin-bottom: 0px;
+      }
+      
+      input:focus {
+        border-color: #aaa;
+      }
+
+      @media screen and (max-width: 768px) {
+        .card {
+          max-width: 80%;
+        }
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { createRoot } = ReactDOM;
+      const { useState } = React;
+
+      const App = () => {
+        return (
+          <main className="flex flex-center w-full">
+            <Deposito />
+          </main>
+        );
+      };
+
+      const Deposito = () => {
+        const [listaIdProductosEditando, establecerListaIdProductosEditando] = useState([]);
+        const [listaProductos, establecerListaProductos] = useState([
+          { id: 1, nombre: "7up", codigo: "7799876543210", cantidad: "31" },
+        ]);
+
+        const manejarAgregar = () => {
+          const id = listaProductos.length > 0
+              ? Math.max(...listaProductos.map((producto) => producto.id)) + 1
+              : 1;
+
+          const item = {
+            id,
+            nombre: "",
+            codigo: "",
+            cantidad: "0",
+          };
+
+          establecerListaProductos([...listaProductos, item]);
+          establecerListaIdProductosEditando([...listaIdProductosEditando, id]);
+        };
+
+        const manejarEditar = (id) => {
+          establecerListaIdProductosEditando([...listaIdProductosEditando, id]);
+        };
+
+        const manejarEliminar = (id) => {
+          establecerListaProductos(listaProductos.filter((producto) => producto.id !== id));
+        };
+
+        const manejarGuardar = (producto) => {
+          const productoExistente = listaProductos.find((producto) => producto.id === producto.id);
+
+          if (productoExistente) {
+            establecerListaProductos(listaProductos.map((p) => (p.id === producto.id ? producto : p)));
+          } else {
+            establecerListaProductos([...listaProductos, producto]);
+          }
+
+          establecerListaIdProductosEditando(listaIdProductosEditando.filter((idProducto) => idProducto !== producto.id));
+        };
+
+        const manejarCancelar = (id) => {
+          const productoExistente = listaProductos.find((producto) => producto.id === id);
+
+          
+          if (
+            productoExistente &&
+            productoExistente.nombre === "" &&
+            productoExistente.codigo === "" &&
+            productoExistente.cantidad === "0"
+          ) {
+            establecerListaProductos(listaProductos.filter((producto) => producto.id !== id));
+          }
+
+          establecerListaIdProductosEditando(listaIdProductosEditando.filter((idProducto) => idProducto !== id));
+        };
+
+        const manejarIncrementarCantidad = (id) => {
+          const productoActualizado = listaProductos.map((producto) => {
+            if (producto.id === id) {
+              return { ...producto, cantidad: String(Number(producto.cantidad) + 1) };
+            }
+            return producto;
+          });
+
+          establecerListaProductos(productoActualizado);
+        };
+
+        listaProductos.sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+        return (
+          <section className="flex flex-col flex-center w-full">
+            <div className="flex flex-row flex-center">
+              <h1>Control Depósito</h1>
+              <button className="add-button" onClick={manejarAgregar}>
+                <i className="fa-regular fa-square-plus" />
+              </button>
+            </div>
+
+            {listaProductos.map((producto) => (
+              <Tarjeta
+                key={producto.id}
+                producto={producto}
+                estaEditando={listaIdProductosEditando?.includes(producto.id)}
+                manejarEditar={() => manejarEditar(producto.id)}
+                manejarEliminar={() => manejarEliminar(producto.id)}
+                manejarGuardar={manejarGuardar}
+                manejarCancelar={() => manejarCancelar(producto.id)}
+                manejarIncrementarCantidad={() => manejarIncrementarCantidad(producto.id)}
+              />
+            ))}
+          </section>
+        );
+      };
+
+      const Formulario = ({ producto, manejarGuardar, manejarCancelar }) => {
+        const [nombre, establecerNombre] = useState(producto.nombre);
+        const [codigo, establecerCodigo] = useState(producto.codigo);
+        const [cantidad, establecerCantidad] = useState(producto.cantidad);
+        const enviarDeshabilitado = nombre?.trim().length === 0 || codigo?.trim().length < 13;
+
+        const manejarEnvio = (e) => {
+          e.preventDefault();
+          manejarGuardar({ ...producto, nombre, codigo, cantidad });
+        };
+
+        const manejarCambioCodigo = (e) => {
+          
+          const valor = e.target.value.replace(/\D/g, "");
+          establecerCodigo(valor);
+        };
+
+        return (
+          <form onSubmit={manejarEnvio} className="card">
+            <div className="flex flex-col w-full">
+              <input
+                type="text"
+                nombre="nombre"
+                placeholder="Nombre"
+                valor={nombre}
+                onChange={(e) => establecerNombre(e.target.value)}
+                requerido
+              />
+              <input
+                type="text"
+                minLength={13}
+                maxLength={13}
+                nombre="codigo"
+                placeholder="Codigo EAM (13 digitos)"
+                valor={codigo}
+                onChange={manejarCambioCodigo}
+                requerido
+              />
+              <input
+                type="number"
+                nombre="cantidad"
+                placeholder="Stock"
+                min={0}
+                valor={cantidad}
+                onChange={(e) => establecerCantidad(e.target.value)}
+                requerido
+              />
+            </div>
+            <div className="flex flex-col">
+              <button
+                className="confirm-button"
+                type="submit"
+                disabled={enviarDeshabilitado}
+              >
+                Aceptar
+              </button>
+              <button className="cancel-button" onClick={manejarCancelar}>
+                Cancelar
+              </button>
+            </div>
+          </form>
+        );
+      };
+
+      const Tarjeta = ({ producto, estaEditando, manejarEditar, manejarEliminar, manejarGuardar, manejarCancelar, manejarIncrementarCantidad }) => {
+        const { cantidad, nombre, codigo } = producto;
+        return estaEditando ? (
+          <Formulario
+            producto={producto}
+            manejarGuardar={manejarGuardar}
+            manejarCancelar={manejarCancelar}
+          />
+        ) : (
+          <article className="card" onClick={() => manejarIncrementarCantidad(producto.id)}>
+            <div className="quantity text-ellipsis">{cantidad}</div>
+            <div className="details">
+              <div className="name text-ellipsis">{nombre}</div>
+              <div className="code text-ellipsis">{codigo}</div>
+            </div>
+            <div className="flex flex-col flex-center">
+              <button className="edit-button" onClick={(e) => { e.stopPropagation(); manejarEditar(); }}>
+                <i class="fa-regular fa-pen-to-square"></i>
+              </button>
+              <button className="delete-button" onClick={(e) => { e.stopPropagation(); manejarEliminar(); }}>
+                <i class="fa-regular fa-trash-can"></i>
+              </button>
+            </div>
+          </article>
+        );
+      };
+
+      const root = createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
